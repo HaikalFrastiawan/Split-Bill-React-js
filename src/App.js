@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './App.css';
 import FriendsList from './components/Friendlist';
 import AddFriendForm from './components/AddFriendForm';
+import SplitBillForm from './components/SplitBillForm';
 
 function App() {
   const [friends, setFriends] = useState([
@@ -37,6 +38,17 @@ function App() {
     setShowAddFriend(false);
   }
 
+   function handleSplitBill(value) {
+    setFriends((friends) =>
+      friends.map((friend) =>
+        friend.id === selectedFriend.id
+          ? { ...friend, balance: friend.balance + value }
+          : friend
+      )
+    );
+
+    setSelectedFriend(null);
+  }
   return (
     <div className="App">
       <h1>Aplikasi Split Bill</h1>
@@ -53,6 +65,16 @@ function App() {
         <button className="button" onClick={handleShowAddFriend}>
           {showAddFriend ? 'Tutup' : 'Tambah Teman'}
         </button>
+
+            {selectedFriend && (
+        <SplitBillForm 
+          selectedFriend={selectedFriend} 
+          onSplitBill={handleSplitBill}
+        />
+      )}
+
+
+
       </div>
     </div>
   );
