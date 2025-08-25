@@ -1,33 +1,44 @@
 // src/components/FriendsList.js
-import React from 'react';
+import React, { useState } from 'react';
+import FriendItem from './FriendItem';
 
-function FriendsList({ friends, onSelectFriend, selectedFriend }) {
+function FriendsList({ friends, onSelectFriend, selectedFriend, onUpdateFriend, onDeleteFriend }) {
+  const [editingId, setEditingId] = useState(null);
+
+  function handleEditFriend(updatedFriend) {
+    onUpdateFriend(updatedFriend);
+    setEditingId(null);
+  }
+
+  function handleCancelEdit() {
+    setEditingId(null);
+  }
+
+  if (friends.length === 0) {
+    return (
+      <div className="friends-list">
+        <h2>Daftar Teman</h2>
+        <p className="empty-state">Belum ada teman. Tambahkan teman baru!</p>
+      </div>
+    );
+  }
+
   return (
     <div className="friends-list">
-      <h2>Daftar Teman</h2>
+      <h2>Daftar Teman ({friends.length})</h2>
       <ul>
         {friends.map((friend) => (
-          <li 
-            key={friend.id} 
-            className={selectedFriend?.id === friend.id ? 'selected' : ''}
-          >
-            <img src={friend.image} alt={friend.name} />
-            <div className="friend-info">
-              <h3>{friend.name}</h3>
-              {friend.balance < 0 && (
-                <p className="red">Kamu berhutang Rp {Math.abs(friend.balance)}</p>
-              )}
-              {friend.balance > 0 && (
-                <p className="green">Teman berhutang Rp {friend.balance}</p>
-              )}
-              {friend.balance === 0 && (
-                <p>Kamu dan teman sudah lunas</p>
-              )}
-            </div>
-            <button onClick={() => onSelectFriend(friend)}>
-              {selectedFriend?.id === friend.id ? 'Tutup' : 'Pilih'}
-            </button>
-          </li>
+          <FriendItem
+            key={friend.id}
+            friend={friend}
+            isSelected={selectedFriend?.id === friend.id}
+            isEditing={editingId === friend.id}
+            onSelect={() => onSelectFriend(friend)}
+            onEdit={() => setEditingId(friend.id)}
+            onSaveEdit={handleEditFriend}
+            onCancelEdit={handleCancelEdit}
+            onDelete={() => onDeleteFriend(friend.id)}
+          />
         ))}
       </ul>
     </div>
