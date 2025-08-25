@@ -1,11 +1,9 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import './App.css';
-
+import FriendsList from './components/Friendlist';
 
 function App() {
-  //state daftar teman
-  const [friend, setFriend] = useState ([
+  const [friends, setFriends] = useState([
     {
       id: 1,
       name: "Andi",
@@ -18,30 +16,27 @@ function App() {
       image: "https://i.pravatar.cc/48?u=2",
       balance: 0,
     },
-  ])
+  ]);
+  
+  // State untuk teman yang dipilih
+  const [selectedFriend, setSelectedFriend] = useState(null);
 
-
+  function handleSelection(friend) {
+    // Jika teman yang sama diklik lagi, batalkan seleksi
+    setSelectedFriend((cur) => (cur?.id === friend.id ? null : friend));
+  }
 
   return (
     <div className="App">
-      <h1>Split bill</h1>
-      <p>Welcome to App Patungan</p>
-
-      <div className="friends-list"> 
-        <h2>Daftar teman</h2>
-        <ul>
-          {friend.map(friend =>(
-            <li key={friend.id}>
-              <img src={friend.image} alt={friend.name} />
-              <h3>{friend.name}</h3>
-              <p>Balance {friend.balance}</p>  
-            </li>
-          ))}
-        </ul>
+      <h1>Aplikasi Split Bill</h1>
+      
+      <div className="sidebar">
+        <FriendsList 
+          friends={friends} 
+          onSelectFriend={handleSelection}
+          selectedFriend={selectedFriend}
+        />
       </div>
-        
-
-        
     </div>
   );
 }
