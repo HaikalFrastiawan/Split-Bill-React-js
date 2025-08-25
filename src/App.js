@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './App.css';
 import FriendsList from './components/Friendlist';
+import AddFriendForm from './components/AddFriendForm';
 
 function App() {
   const [friends, setFriends] = useState([
@@ -18,12 +19,22 @@ function App() {
     },
   ]);
   
-  // State untuk teman yang dipilih
+  const [showAddFriend, setShowAddFriend] = useState(false);
   const [selectedFriend, setSelectedFriend] = useState(null);
 
+  function handleShowAddFriend() {
+    setShowAddFriend((show) => !show);
+    setSelectedFriend(null);
+  }
+
+  function handleAddFriend(friend) {
+    setFriends((friends) => [...friends, friend]);
+    setShowAddFriend(false);
+  }
+
   function handleSelection(friend) {
-    // Jika teman yang sama diklik lagi, batalkan seleksi
     setSelectedFriend((cur) => (cur?.id === friend.id ? null : friend));
+    setShowAddFriend(false);
   }
 
   return (
@@ -36,6 +47,12 @@ function App() {
           onSelectFriend={handleSelection}
           selectedFriend={selectedFriend}
         />
+        
+        {showAddFriend && <AddFriendForm onAddFriend={handleAddFriend} />}
+        
+        <button className="button" onClick={handleShowAddFriend}>
+          {showAddFriend ? 'Tutup' : 'Tambah Teman'}
+        </button>
       </div>
     </div>
   );
